@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.craftercms</groupId>
     <artifactId>crafter-studio2-installer</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Crafter Studio 2.5 Installer builder</name>
     <description>Crafter Studio 2.5 Installer builder</description>
     <properties>
-        <packageVersion>2.6.0-SNAPSHOT</packageVersion>
+        <packageVersion>2.5.2-SNAPSHOT</packageVersion>
         <solr.version>4.10.4</solr.version>
     </properties>
 
