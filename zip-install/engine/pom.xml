@@ -17,6 +17,7 @@
             <groupId>org.craftercms</groupId>
             <artifactId>crafter-studio-publishing-receiver</artifactId>
             <version>${packageVersion}</version>
+            <classifier>aio</classifier>
         </dependency>
         <dependency>
             <groupId>org.craftercms</groupId>
