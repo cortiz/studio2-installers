@@ -36,7 +36,7 @@
             <destName>solr-crafter.war</destName>
         </file>
         <file>
-            <source>target/bin/crafter-studio-publishing-receiver-${packageVersion}.jar</source>
+            <source>target/bin/crafter-studio-publishing-receiver-${packageVersion}-aio.jar</source>
             <outputDirectory>crafter-deployer</outputDirectory>
             <destName>crafter-studio-publishing-receiver.jar</destName>
         </file>
@@ -67,4 +67,3 @@
     </files>
 
 </assembly>
-
