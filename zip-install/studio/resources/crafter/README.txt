@@ -6,6 +6,13 @@ Crafter is an award winning open source web content and experience management so
 
 You can learn more about Crafter CMS here: http://docs.craftercms.org/en/stable/introduction/index.html
 
+Supported Platforms / Pre-requisites
+------------------------------------
+Crafter CMS is Java and runs on almost all operating systems. You can find a list of supported platforms here:
+http://docs.craftercms.org/en/stable/system-administrators/prod-environment/supported-platforms.html
+
+To run this bundle you must have Java 1.7 or higher installed and JAVA_HOME configured.
+
 Starting the Application
 ------------------------
 To start Crafter CMS, simply run the startup script (startup.sh or startup.bat) in the same folder as this file.  The server will start up.  This may take a few moments.
