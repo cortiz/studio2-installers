@@ -59,7 +59,6 @@
    <modules>
        <module>zip-install/studio</module>
        <module>zip-install/engine</module>
-       <module>zip-install/profile-social</module>
    </modules>
 
 <profiles>
