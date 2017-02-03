@@ -6,6 +6,18 @@ Crafter is an award winning open source web content and experience management so
 
 You can learn more about Crafter CMS here: http://docs.craftercms.org/en/stable/introduction/index.html
 
+Crafter Engine
+--------------
+Today's content needs security and contextualization and personalization.  To pre-bake all the possibilities is impossible.  To rely on standard database style architectures is foolish.  Crafter Engine gives you the architecturally correct means to deliver personalized dynamic content at scale.
+
+Crafter Engine is simple Spring MVC application optimized for high performance, distributed, personalized content delivery.   It's design is simple: Take raw assets from local stores, stir-fry them specifically for the requester and render/return the result in whatever format (HTML, JSON, VRML etc) the consumer requires.   Assets are stored on disk as XML, FTL templates, images etc.  On request they are loaded into memory and consumed from a LRU memory based cache.  
+
+Simplicity, Availability and Performance:
+Architecture is the key.  Crafter Engine is "Shared Nothing"  There is NO SHARED DATABASE. Every node has all of the content and it's own Solr based index to support sophisticated queries.  You can distribute nodes to data centers throughout the world, serve content locally and cover your HA/DR needs at the same time.
+
+Crafter Engine is blazingly fast.  Unlike almost every other CMS on the planet, Crafter decoupled the delivery system from authoring and the repository and the made the delivery completely self sufficient components that generally speaking, work out of memory.
+
+
 Supported Platforms / Pre-requisites
 ------------------------------------
 Crafter CMS is Java and runs on almost all operating systems. You can find a list of supported platforms here:
@@ -13,36 +25,9 @@ http://docs.craftercms.org/en/stable/system-administrators/prod-environment/supp
 
 To run this bundle you must have Java 1.7 or higher installed and JAVA_HOME configured.
 
-Starting the Application
-------------------------
-To start Crafter CMS, simply run the startup script (startup.sh or startup.bat) in the same folder as this file.  The server will start up.  This may take a few moments.
+Install / Starting the Application
+----------------------------------
+To install and configure Crafter Engine on your delivery node/server follow these isntructions:
+http://docs.craftercms.org/en/stable/system-administrators/prod-environment/install-engine.html
 
-You can find detailed log information from the server in: INSTALL_FOLDER/apache-tomcat/logs/catalina.out.
-
-Logging In
------------
-Open a web browser and go to the URL: http://localhost:8080/studio
-
-To log in to Crafter Studio, enter `admin` for the user name and `admin` for the password.
-
-Create a New Site
------------------
-Once logged in:
-    1. Click `Create Site` 
-    2. Provide a name, 
-    3. Choose a blueprint (a site template) 
-    4. and click `Create`  
-
-Studio will create your new site and redirect you to a preview where you can preview and edit your site. 
-
-An overview of Crafter CMS and a short/simple editing demonstration can be found here:
-http://www.craftersoftware.com/resources/lp?id=deba4c2a-289d-cab0-75cd-1d3c84528c1b&t=v
-
-Going Further
--------------
-To learn more about content modeling, publishing, personalization, configuration and other topics please visit: http://docs.craftercms.org
-
-Additional Resources:
-* http://craftersoftware.com/resources/white-papers
-* http://craftersoftware.com/resources/e-books
-* http://craftersoftware.com/resources/webcasts
+To start Crafter Engine execute INSTALL_FOLDER\apache-tomcat\bin\startup.sh (or startup.bat) 
