@@ -1,6 +1,6 @@
 @echo off
 setlocal
 cd bin
-./startup.bat
+.startup.bat
 cd ..
 endlocal
