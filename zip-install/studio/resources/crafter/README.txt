@@ -6,6 +6,12 @@ Crafter is an award winning open source web content and experience management so
 
 You can learn more about Crafter CMS here: http://docs.craftercms.org/en/stable/introduction/index.html
 
+Crafter Studio
+--------------
+Crafter Studio is the content authoring, management and publishing application that allows marketers and content editors to create rich web experiences.  With a set of powerful and easy-to-use tools, content creators and managers can create timely content without any involvement from developers or IT administrators.  The power of creating rich content and delivering dynamic experiences is in the hands of business users with Crafter Studio.
+
+Crafter CMS is a decoupled CMS.  Crafter Studio deploys content to remote Crafter Engine servers (and other channels.)
+
 Supported Platforms / Pre-requisites
 ------------------------------------
 Crafter CMS is Java and runs on almost all operating systems. You can find a list of supported platforms here:
