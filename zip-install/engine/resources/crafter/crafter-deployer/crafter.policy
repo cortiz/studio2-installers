@@ -1,0 +1,14 @@
+grant{
+     permission java.lang.RuntimePermission "*";
+    permission java.lang.reflect.ReflectPermission "*";
+    permission java.util.PropertyPermission "*", "read,write";
+    permission java.sql.SQLPermission "*";
+    permission java.net.NetPermission "*";
+    permission java.net.SocketPermission "*", "accept,connect,listen";
+    permission javax.management.MBeanPermission "*", "*";
+    permission javax.management.MBeanServerPermission "createMBeanServer";
+    permission javax.management.MBeanServerPermission "findMBeanServer";
+    permission javax.management.MBeanTrustPermission "register";
+    permission java.io.FilePermission "${deployer.home}/-", "read, write, delete, readlink";
+    permission java.io.FilePermission "${deployer.home}", "read, write, delete, readlink";
+};
