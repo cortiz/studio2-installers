@@ -82,6 +82,10 @@
 #                   -agentlib:jdwp=transport=$JPDA_TRANSPORT,
 #                       address=$JPDA_ADDRESS,server=y,suspend=$JPDA_SUSPEND
 #
+#   JSSE_OPTS       (Optional) Java runtime options used to control the TLS
+#                   implementation when JSSE is used. Default is:
+#                   "-Djdk.tls.ephemeralDHKeySize=2048"
+#
 #   CATALINA_PID    (Optional) Path of the file which should contains the pid
 #                   of the catalina startup java process, when start (fork) is
 #                   used
@@ -93,16 +97,23 @@
 #   LOGGING_MANAGER (Optional) Override Tomcat's logging manager
 #                   Example (all one line)
 #                   LOGGING_MANAGER="-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager"
+#
+#   USE_NOHUP       (Optional) If set to the string true the start command will
+#                   use nohup so that the Tomcat process will ignore any hangup
+#                   signals. Default is "false" unless running on HP-UX in which
+#                   case the default is "true"
 # -----------------------------------------------------------------------------
 
 # OS specific support.  $var _must_ be set to either true or false.
 cygwin=false
 darwin=false
 os400=false
+hpux=false
 case "`uname`" in
 CYGWIN*) cygwin=true;;
 Darwin*) darwin=true;;
 OS400*) os400=true;;
+HP-UX*) hpux=true;;
 esac
 
 # resolve links - $0 may be a softlink
@@ -215,6 +226,11 @@ if $cygwin; then
   JAVA_ENDORSED_DIRS=`cygpath --path --windows "$JAVA_ENDORSED_DIRS"`
 fi
 
+if [ -z "$JSSE_OPTS" ] ; then
+  JSSE_OPTS="-Djdk.tls.ephemeralDHKeySize=2048"
+fi
+JAVA_OPTS="$JAVA_OPTS $JSSE_OPTS"
+
 # Set juli LogManager config file if it is present and an override has not been issued
 if [ -z "$LOGGING_CONFIG" ]; then
   if [ -r "$CATALINA_BASE"/conf/logging.properties ]; then
@@ -232,6 +248,18 @@ fi
 # Uncomment the following line to make the umask available when using the
 # org.apache.catalina.security.SecurityListener
 #JAVA_OPTS="$JAVA_OPTS -Dorg.apache.catalina.security.SecurityListener.UMASK=`umask`"
+
+if [ -z "$USE_NOHUP" ]; then
+    if $hpux; then
+        USE_NOHUP="true"
+    else
+        USE_NOHUP="false"
+    fi
+fi
+unset _NOHUP
+if [ "$USE_NOHUP" = "true" ]; then
+    _NOHUP=nohup
+fi
 
 # ----- Execute The Requested Command -----------------------------------------
 
@@ -264,7 +292,7 @@ if [ "$1" = "jpda" ] ; then
   if [ -z "$JPDA_OPTS" ]; then
     JPDA_OPTS="-agentlib:jdwp=transport=$JPDA_TRANSPORT,address=$JPDA_ADDRESS,server=y,suspend=$JPDA_SUSPEND"
   fi
-  CATALINA_OPTS="$CATALINA_OPTS $JPDA_OPTS"
+  CATALINA_OPTS="$JPDA_OPTS $CATALINA_OPTS"
   shift
 fi
 
@@ -335,6 +363,8 @@ elif [ "$1" = "start" ] ; then
           ps -p $PID >/dev/null 2>&1
           if [ $? -eq 0 ] ; then
             echo "Tomcat appears to still be running with PID $PID. Start aborted."
+            echo "If the following process is not a Tomcat process, remove the PID file and try again:"
+            ps -f -p $PID
             exit 1
           else
             echo "Removing/clearing stale PID file."
@@ -371,7 +401,7 @@ elif [ "$1" = "start" ] ; then
       echo "Using Security Manager"
     fi
     shift
-    eval "\"$_RUNJAVA\"" "\"$LOGGING_CONFIG\"" $LOGGING_MANAGER $JAVA_OPTS $CATALINA_OPTS \
+    eval $_NOHUP "\"$_RUNJAVA\"" "\"$LOGGING_CONFIG\"" $LOGGING_MANAGER $JAVA_OPTS $CATALINA_OPTS \
       -Djava.endorsed.dirs="\"$JAVA_ENDORSED_DIRS\"" -classpath "\"$CLASSPATH\"" \
       -Djava.security.manager \
       -Djava.security.policy=="\"$CATALINA_BASE/conf/catalina.policy\"" \
@@ -382,7 +412,7 @@ elif [ "$1" = "start" ] ; then
       >> "$CATALINA_OUT" 2>&1 "&"
 
   else
-    eval "\"$_RUNJAVA\"" "\"$LOGGING_CONFIG\"" $LOGGING_MANAGER $JAVA_OPTS $CATALINA_OPTS \
+    eval $_NOHUP "\"$_RUNJAVA\"" "\"$LOGGING_CONFIG\"" $LOGGING_MANAGER $JAVA_OPTS $CATALINA_OPTS \
       -Djava.endorsed.dirs="\"$JAVA_ENDORSED_DIRS\"" -classpath "\"$CLASSPATH\"" \
       -Dcatalina.base="\"$CATALINA_BASE\"" \
       -Dcatalina.home="\"$CATALINA_HOME\"" \
@@ -471,10 +501,12 @@ elif [ "$1" = "stop" ] ; then
           sleep 1
         fi
         if [ $SLEEP -eq 0 ]; then
+          echo "Tomcat did not stop in time."
           if [ $FORCE -eq 0 ]; then
-            echo "Tomcat did not stop in time. PID file was not removed. To aid diagnostics a thread dump has been written to standard out."
-            kill -3 `cat "$CATALINA_PID"`
+            echo "PID file was not removed."
           fi
+          echo "To aid diagnostics a thread dump has been written to standard out."
+          kill -3 `cat "$CATALINA_PID"`
         fi
         SLEEP=`expr $SLEEP - 1 `
       done
@@ -501,8 +533,6 @@ elif [ "$1" = "stop" ] ; then
                         echo "The PID file could not be removed."
                     fi
                 fi
-                # Set this to zero else a warning will be issued about the process still running
-                KILL_SLEEP_INTERVAL=0
                 echo "The Tomcat process has been killed."
                 break
             fi
@@ -511,7 +541,7 @@ elif [ "$1" = "stop" ] ; then
             fi
             KILL_SLEEP_INTERVAL=`expr $KILL_SLEEP_INTERVAL - 1 `
         done
-        if [ $KILL_SLEEP_INTERVAL -gt 0 ]; then
+        if [ $KILL_SLEEP_INTERVAL -lt 0 ]; then
             echo "Tomcat has not been killed completely yet. The process might be waiting on some system call or might be UNINTERRUPTIBLE."
         fi
       fi
