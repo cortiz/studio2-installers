@@ -1,5 +1,16 @@
 #!/bin/sh
-export JAVA_OPTS="-XX:MaxPermSize=512m -Xms128m -Xmx1024m"
+
+
+if [ "$(whoami)" == "root" ]; then
+	echo -e "\033[38;5;196m"
+	echo -e "Crafter CMS cowardly refuses to run as root."
+    echo -e "Running as root is dangerous and is not supported."
+    echo -e "\033[0m"
+	exit 1
+fi
+
+export crafterSecureHome="$(dirname "$(pwd)")"
+export JAVA_OPTS="-XX:MaxPermSize=512m -Xms128m -Xmx1024m -Dcrafter.home=$crafterSecureHome"
 export CATALINA_PID=./apache-tomcat/temp/catalina.pid
 
 cd ..
@@ -14,7 +25,7 @@ cd ..
 echo "************************************************************"
 echo "Starting Tomcat..."
 echo "************************************************************"
-sh ./apache-tomcat/bin/startup.sh
+sh ./apache-tomcat/bin/catalina.sh start -security
 
 cd ./bin
 
