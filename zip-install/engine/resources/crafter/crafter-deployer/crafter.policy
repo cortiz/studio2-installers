@@ -11,4 +11,5 @@ grant{
     permission javax.management.MBeanTrustPermission "register";
     permission java.io.FilePermission "${deployer.home}/-", "read, write, delete, readlink";
     permission java.io.FilePermission "${deployer.home}", "read, write, delete, readlink";
+    permission java.io.FilePermission "${deployer.home}/tmp", "read, write, delete, readlink";
 };
