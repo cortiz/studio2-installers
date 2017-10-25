@@ -9,4 +9,4 @@ if [ "$(whoami)" == "root" ]; then
 fi
 
 export deployerSecureHome=$(dirname "${BASH_SOURCE[0]}")
-nohup java -server "-Ddeployer.home=$deployerSecureHome" -Djava.security.manager -Djava.security.policy==crafter.policy -Djava.ext.dirs=. -classpath .:conf org.craftercms.cstudio.publishing.PublishingReceiverMain >> deployment.out 2>&1&
+nohup java -server "-Ddeployer.home=$deployerSecureHome" "-Djava.io.tmpdir=$deployerSecureHome/tmp" -Djava.security.manager -Djava.security.policy==crafter.policy -Djava.ext.dirs=. -classpath .:conf org.craftercms.cstudio.publishing.PublishingReceiverMain >> deployment.out 2>&1&
